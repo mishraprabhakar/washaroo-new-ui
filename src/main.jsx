@@ -2,11 +2,13 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
-import {ChakraProvider} from "@chakra-ui/react";
+import {ChakraProvider, createStandaloneToast} from "@chakra-ui/react";
 import HomePage from "./pages/Home.jsx";
 import RootLayout from "./pages/Root.jsx";
 import LoginPage from "./pages/Login.jsx";
 import SignUpPage from "./pages/SignUp.jsx";
+
+const {ToastContainer} = createStandaloneToast();
 
 const router = createBrowserRouter([
     {
@@ -37,6 +39,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <ChakraProvider>
             <RouterProvider router={router}/>
+            <ToastContainer/>
         </ChakraProvider>
     </React.StrictMode>,
 )

@@ -3,6 +3,7 @@ import {Form, Formik} from "formik";
 import * as Yup from "yup";
 import CustomInput from "../UI/CustomInput.jsx";
 import signInPageImg from "../../assets/signin-page-img.svg";
+import {errorNotification, successNotification} from "../../services/notification.js";
 
 const FORM_INITIAL_VALUES = {
     username: '',
@@ -25,8 +26,20 @@ export default function LoginForm() {
         setTimeout(() => {
             alert(JSON.stringify(values, null, 2));
             setSubmitting(false);
-            resetForm();
-        }, 10000);
+
+            if (values.username === "prabhakar@gmail.com" && values.password === "prabhakar@123") {
+                successNotification(
+                    "Success",
+                    "User successfully logged in"
+                );
+            } else {
+                errorNotification(
+                    "Error",
+                    "Invalid credentials, please try again."
+                )
+            }
+
+        }, 3000);
     }
 
     return (

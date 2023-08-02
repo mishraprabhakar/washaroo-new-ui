@@ -6,11 +6,13 @@ import * as Yup from "yup";
 import {Form, Formik} from "formik";
 import CustomInput from "../UI/CustomInput.jsx";
 import CustomSelect from "../UI/CustomSelect.jsx";
-import {Link as RounterLink} from "react-router-dom";
+import {Link as RounterLink, useNavigate} from "react-router-dom";
+import {saveUser} from "../../services/client.js";
+import {errorNotification, successNotification} from "../../services/notification.js";
 
 const INITIAL_VALUES = {
-    firstname: '',
-    lastname: '',
+    firstName: '',
+    lastName: '',
     role: '',
     email: '',
     password: '',
@@ -18,10 +20,10 @@ const INITIAL_VALUES = {
 }
 
 const FORM_VALIDATION_SCHEMA = Yup.object().shape({
-    firstname: Yup.string()
+    firstName: Yup.string()
         .max(20, 'Must be 20 characters or less')
         .required('Required'),
-    lastname: Yup.string()
+    lastName: Yup.string()
         .max(20, 'Must be 20 characters or less')
         .required('Required'),
     email: Yup.string()
@@ -45,13 +47,27 @@ const FORM_VALIDATION_SCHEMA = Yup.object().shape({
 
 export default function SignUpForm() {
     const [showPassword, setShowPassword] = useState(false)
+    const navigate = useNavigate();
 
-    const formSubmissionHandler = (values, {setSubmitting, resetForm}) => {
-        setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
+    const formSubmissionHandler = (values, {setSubmitting}) => {
+        setSubmitting(true);
+
+        saveUser(values)
+            .then(res => {
+                successNotification(
+                    "Success",
+                    "Registration successfully completed."
+                );
+                navigate("/login");
+            }).catch(err => {
+            console.log(err);
+            errorNotification(
+                err.code,
+                err.response?.data.message
+            );
+        }).finally(() => {
             setSubmitting(false);
-            resetForm();
-        }, 10000);
+        })
     }
 
     return (
@@ -86,18 +102,18 @@ export default function SignUpForm() {
                                     <HStack>
                                         <Box>
                                             <CustomInput
-                                                id="firstname"
+                                                id="firstName"
                                                 label="Firstname"
-                                                name="firstname"
+                                                name="firstName"
                                                 type="text"
                                                 placeholder="Enter your firstname"
                                             />
                                         </Box>
                                         <Box>
                                             <CustomInput
-                                                id="lastname"
+                                                id="lastName"
                                                 label="Lastname"
-                                                name="lastname"
+                                                name="lastName"
                                                 type="text"
                                                 placeholder="Enter your lastname"
                                             />

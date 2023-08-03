@@ -14,7 +14,7 @@ import {
     PopoverContent,
     useColorModeValue,
     useBreakpointValue,
-    useDisclosure, Image, useColorMode,
+    useDisclosure, Image, useColorMode, MenuList, Center, Avatar, MenuDivider, MenuItem, MenuButton, Menu,
 } from '@chakra-ui/react'
 import {
     HamburgerIcon,
@@ -25,10 +25,12 @@ import {
 import appLogo from "../../assets/washaroo-logo.jpeg"
 import {NavLink} from "react-router-dom";
 import {BsMoonStarsFill, BsSun} from "react-icons/bs";
+import {useAuth} from "../../context/AuthContext.jsx";
 
 export default function Navbar() {
     const {colorMode, toggleColorMode} = useColorMode();
     const {isOpen, onToggle} = useDisclosure()
+    const {user, isUserAuthenticated, logOut} = useAuth();
 
     const NAV_ITEMS = [
         {
@@ -101,28 +103,83 @@ export default function Navbar() {
                         {colorMode === "light" ? <BsMoonStarsFill/> : <BsSun/>}
                     </Button>
 
-                    <Button
-                        as={NavLink}
-                        fontSize={'sm'}
-                        fontWeight={400}
-                        variant={'link'}
-                        to={"/login"}
-                    >
-                        Sign In
-                    </Button>
-                    <Button
-                        as={NavLink}
-                        display={{base: 'none', md: 'inline-flex'}}
-                        fontSize={'sm'}
-                        fontWeight={600}
-                        color={'white'}
-                        bg={'blue.400'}
-                        to={"/signup"}
-                        _hover={{
-                            bg: 'blue.300',
-                        }}>
-                        Sign Up
-                    </Button>
+                    {!isUserAuthenticated() &&
+                        <Button
+                            as={NavLink}
+                            fontSize={'sm'}
+                            fontWeight={400}
+                            variant={'link'}
+                            to={"/login"}
+                        >
+                            Sign In
+                        </Button>
+                    }
+
+                    {!isUserAuthenticated() &&
+                        <Button
+                            as={NavLink}
+                            display={{base: 'none', md: 'inline-flex'}}
+                            fontSize={'sm'}
+                            fontWeight={600}
+                            color={'white'}
+                            bg={'blue.400'}
+                            to={"/signup"}
+                            _hover={{
+                                bg: 'blue.300',
+                            }}>
+                            Sign Up
+                        </Button>
+                    }
+
+                    {isUserAuthenticated() &&
+                        <Menu>
+                            <MenuButton
+                                as={Button}
+                                rounded={'full'}
+                                variant={'link'}
+                                cursor={'pointer'}
+                                minW={0}>
+                                <Avatar
+                                    size={'sm'}
+                                    src={user?.profileImageUrl}
+                                />
+                            </MenuButton>
+                            <MenuList alignItems={'center'}>
+                                <br/>
+                                <Center>
+                                    <Avatar
+                                        size={'2xl'}
+                                        src={user?.profileImageUrl}
+                                    />
+                                </Center>
+                                <br/>
+                                <Center>
+                                    <Text as="b">
+                                        {user?.firstName} {user?.lastName}
+                                    </Text>
+                                </Center>
+                                <Center>
+                                    <Text as="span" fontSize={14}>
+                                        {user?.email}
+                                    </Text>
+                                </Center>
+                                <br/>
+                                <MenuDivider/>
+                                <MenuItem
+                                    as={NavLink}
+                                    to={`profile/${user?.userId}`}
+                                >
+                                    View & Update Profile
+                                </MenuItem>
+                                <MenuItem>Account Settings</MenuItem>
+                                <MenuItem
+                                    onClick={logOut}
+                                >
+                                    Logout
+                                </MenuItem>
+                            </MenuList>
+                        </Menu>
+                    }
                 </Stack>
             </Flex>
 

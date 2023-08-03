@@ -7,6 +7,7 @@ import HomePage from "./pages/Home.jsx";
 import RootLayout from "./pages/Root.jsx";
 import LoginPage from "./pages/Login.jsx";
 import SignUpPage from "./pages/SignUp.jsx";
+import AuthProvider from "./context/AuthContext.jsx";
 
 const {ToastContainer} = createStandaloneToast();
 
@@ -38,7 +39,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <ChakraProvider>
-            <RouterProvider router={router}/>
+            <AuthProvider>
+                <RouterProvider router={router}/>
+            </AuthProvider>
             <ToastContainer/>
         </ChakraProvider>
     </React.StrictMode>,

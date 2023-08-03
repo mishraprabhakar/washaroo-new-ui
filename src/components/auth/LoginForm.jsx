@@ -4,6 +4,8 @@ import * as Yup from "yup";
 import CustomInput from "../UI/CustomInput.jsx";
 import signInPageImg from "../../assets/signin-page-img.svg";
 import {errorNotification, successNotification} from "../../services/notification.js";
+import {useNavigate} from "react-router-dom";
+import {useAuth} from "../../context/AuthContext.jsx";
 
 const FORM_INITIAL_VALUES = {
     username: '',
@@ -21,25 +23,26 @@ const FORM_VALIDATION_SCHEMA = Yup.object().shape({
 });
 
 export default function LoginForm() {
+    const {login} = useAuth();
+    const navigate = useNavigate();
 
-    const formSubmissionHandler = (values, {setSubmitting, resetForm}) => {
-        setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
-            setSubmitting(false);
-
-            if (values.username === "prabhakar@gmail.com" && values.password === "prabhakar@123") {
+    const formSubmissionHandler = (values, {setSubmitting}) => {
+        setSubmitting(true);
+        login(values)
+            .then(res => {
                 successNotification(
                     "Success",
-                    "User successfully logged in"
+                    "Successfully Logged-In"
                 );
-            } else {
-                errorNotification(
-                    "Error",
-                    "Invalid credentials, please try again."
-                )
-            }
-
-        }, 3000);
+                navigate("/");
+            }).catch(err => {
+            errorNotification(
+                err.code,
+                err.response?.data.message
+            )
+        }).finally(() => {
+            setSubmitting(false);
+        })
     }
 
     return (

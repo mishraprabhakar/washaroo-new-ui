@@ -167,7 +167,7 @@ export default function Navbar() {
                                 <MenuDivider/>
                                 <MenuItem
                                     as={NavLink}
-                                    to={`profile/${user?.userId}`}
+                                    to={`view/${user?.userId}`}
                                 >
                                     View & Update Profile
                                 </MenuItem>

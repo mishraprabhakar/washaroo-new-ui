@@ -14,6 +14,7 @@ const ViewProfilePage = () => {
 
     // states for managing backend api
     const [isFetching, setIsFetching] = useState(true);
+    const [isNewDataAdded, setIsNewDataAdded] = useState(false);
     const [error, setError] = useState(null);
 
     // custom hook for auth
@@ -59,13 +60,7 @@ const ViewProfilePage = () => {
             shouldFetchShopDetails.current = false;
             fetchShopDetails(user?.userId);
         }
-    }, [loading])
-
-
-    const profileData = {
-        user,
-        shopDetails
-    }
+    }, [loading, isNewDataAdded])
 
     if (isFetching) {
         return (
@@ -127,8 +122,13 @@ const ViewProfilePage = () => {
         )
     }
 
+    const profileData = {
+        user,
+        shopDetails
+    }
 
-    return <ViewProfileDetails data={profileData}/>
+    return <ViewProfileDetails data={profileData} setIsNewDataAdded={setIsNewDataAdded}
+                               shouldFetchShopDetails={shouldFetchShopDetails}/>
 }
 
 export default ViewProfilePage;

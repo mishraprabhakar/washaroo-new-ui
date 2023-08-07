@@ -2,6 +2,10 @@ import {Form, Formik} from "formik";
 import * as Yup from "yup";
 import {Box, Button, Stack} from "@chakra-ui/react";
 import CustomInput from "../UI/CustomInput.jsx";
+import {addItem} from "../../services/client.js";
+import {useAuth} from "../../context/AuthContext.jsx";
+import {useParams} from "react-router-dom";
+import {errorNotification, successNotification} from "../../services/notification.js";
 
 const FORM_INITIAL_VALUES = {
     name: '',
@@ -17,13 +21,27 @@ const FORM_VALIDATION_SCHEMA = Yup.object().shape({
         .required('Price is required'),
 });
 
-const AddItemForm = () => {
+const AddItemForm = ({setIsNewDataAdded, shouldFetchShopDetails}) => {
+    const {user} = useAuth();
 
-    const formSubmissionHandler = (values, {setSubmitting}) => {
-        setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
+    const formSubmissionHandler = (values, {setSubmitting, resetForm}) => {
+        addItem(user?.userId, values)
+            .then(res => {
+                successNotification(
+                    "Success",
+                    "Item added successfully"
+                )
+                resetForm();
+                shouldFetchShopDetails.current = true;
+                setIsNewDataAdded(true);
+            }).catch(err => {
+            errorNotification(
+                err.code,
+                err.response
+            )
+        }).finally(() => {
             setSubmitting(false);
-        }, 400);
+        })
     }
 
     return (

@@ -32,7 +32,7 @@ import {BiSearch} from "react-icons/bi";
 import {useRef, useState} from "react";
 import AddItemForm from "./AddItemForm.jsx";
 
-const ViewProfileDetails = ({data}) => {
+const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) => {
     const [enteredSearchItem, setEnteredSearchItem] = useState("");
     const {isOpen, onOpen, onClose} = useDisclosure()
     const btnRef = useRef()
@@ -243,7 +243,7 @@ const ViewProfileDetails = ({data}) => {
                                             <DrawerHeader>Create New Item</DrawerHeader>
 
                                             <DrawerBody>
-                                                <AddItemForm/>
+                                                <AddItemForm setIsNewDataAdded={setIsNewDataAdded} shouldFetchShopDetails={shouldFetchShopDetails}/>
                                             </DrawerBody>
 
                                             <DrawerFooter>
@@ -260,11 +260,11 @@ const ViewProfileDetails = ({data}) => {
                                 {
                                     enteredSearchItem && data?.shopDetails?.listOfItems?.filter(item =>
                                         item.name.toLowerCase().startsWith(enteredSearchItem))
-                                        .map(item => <ShowServeItemDetails key={item.id} item={item}/>)
+                                        .map(item => <ShowServeItemDetails key={item?.itemId} item={item}/>)
                                 }
                                 {
                                     !enteredSearchItem && data?.shopDetails?.listOfItems?.map(item =>
-                                        <ShowServeItemDetails key={item.id} item={item}/>)
+                                        <ShowServeItemDetails key={item?.itemId} item={item}/>)
                                 }
                                 {
                                     enteredSearchItem && data?.shopDetails?.listOfItems?.filter(item =>

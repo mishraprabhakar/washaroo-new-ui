@@ -38,3 +38,15 @@ export const fetchLaundryShopOwnerDetails = async (userId) => {
         throw e;
     }
 }
+
+export const addItem = async (userId, item) => {
+    try {
+        return await axios.post(
+            `http://localhost:8080/api/v1/laundry-shop/items/${userId}`,
+            item,
+            getAuthConfig()
+        )
+    } catch (e) {
+        throw  e;
+    }
+}

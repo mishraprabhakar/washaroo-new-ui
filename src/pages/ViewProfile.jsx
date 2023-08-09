@@ -127,8 +127,11 @@ const ViewProfilePage = () => {
         shopDetails
     }
 
-    return <ViewProfileDetails data={profileData} setIsNewDataAdded={setIsNewDataAdded}
-                               shouldFetchShopDetails={shouldFetchShopDetails}/>
+    return <ViewProfileDetails
+        data={profileData}
+        setIsNewDataAdded={setIsNewDataAdded}
+        shouldFetchShopDetails={shouldFetchShopDetails}
+    />
 }
 
 export default ViewProfilePage;

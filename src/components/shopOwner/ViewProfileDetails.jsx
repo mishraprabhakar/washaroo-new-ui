@@ -243,7 +243,8 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                                             <DrawerHeader>Create New Item</DrawerHeader>
 
                                             <DrawerBody>
-                                                <AddItemForm setIsNewDataAdded={setIsNewDataAdded} shouldFetchShopDetails={shouldFetchShopDetails}/>
+                                                <AddItemForm setIsNewDataAdded={setIsNewDataAdded}
+                                                             shouldFetchShopDetails={shouldFetchShopDetails}/>
                                             </DrawerBody>
 
                                             <DrawerFooter>
@@ -260,11 +261,21 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                                 {
                                     enteredSearchItem && data?.shopDetails?.listOfItems?.filter(item =>
                                         item.name.toLowerCase().startsWith(enteredSearchItem))
-                                        .map(item => <ShowServeItemDetails key={item?.itemId} item={item}/>)
+                                        .map(item => <ShowServeItemDetails
+                                            key={item?.itemId}
+                                            item={item}
+                                            setIsNewDataAdded={setIsNewDataAdded}
+                                            shouldFetchShopDetails={shouldFetchShopDetails}
+                                        />)
                                 }
                                 {
                                     !enteredSearchItem && data?.shopDetails?.listOfItems?.map(item =>
-                                        <ShowServeItemDetails key={item?.itemId} item={item}/>)
+                                        <ShowServeItemDetails
+                                            key={item?.itemId}
+                                            item={item}
+                                            setIsNewDataAdded={setIsNewDataAdded}
+                                            shouldFetchShopDetails={shouldFetchShopDetails}
+                                        />)
                                 }
                                 {
                                     enteredSearchItem && data?.shopDetails?.listOfItems?.filter(item =>

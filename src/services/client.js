@@ -50,3 +50,14 @@ export const addItem = async (userId, item) => {
         throw  e;
     }
 }
+
+export const deleteItem = async (itemId) => {
+    try {
+        return await axios.delete(
+            `http://localhost:8080/api/v1/laundry-shop/items/${itemId}`,
+            getAuthConfig()
+        )
+    } catch (e) {
+        throw e;
+    }
+}

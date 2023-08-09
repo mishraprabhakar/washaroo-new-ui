@@ -33,7 +33,7 @@ const AddItemForm = ({setIsNewDataAdded, shouldFetchShopDetails}) => {
                 )
                 resetForm();
                 shouldFetchShopDetails.current = true;
-                setIsNewDataAdded(true);
+                setIsNewDataAdded(prevState => (!prevState));
             }).catch(err => {
             errorNotification(
                 err.code,

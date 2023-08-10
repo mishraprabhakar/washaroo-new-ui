@@ -61,3 +61,15 @@ export const deleteItem = async (itemId) => {
         throw e;
     }
 }
+
+export const addOrUpdateAccountDetails = async (userId, accountDetails) => {
+    try {
+        return await axios.post(
+            `http://localhost:8080/api/v1/laundry-shop/accounts/${userId}`,
+            accountDetails,
+            getAuthConfig()
+        )
+    } catch (e) {
+        throw  e;
+    }
+}

@@ -28,15 +28,16 @@ const ViewProfilePage = () => {
         fetchLaundryShopOwnerDetails(userId)
             .then(res => {
                 const details = res.data?.data;
-                setShopDetails(
-                    {
-                        shopName: details?.shopName,
-                        serveItemLimit: details?.serveItemLimit,
-                        rating: details?.shopRatedByCustomer,
-                        listOfItems: details?.servedList,
-                        accountDetails: details?.accountDetails
-                    }
-                )
+
+                const shopDetails = {
+                    shopName: details?.shopName,
+                    serveItemLimit: details?.serveItemLimit,
+                    rating: details?.shopRatedByCustomer,
+                    listOfItems: details?.servedList,
+                    accountDetails: details?.accountDetails
+                };
+
+                setShopDetails(shopDetails);
             }).catch(err => {
             setError(err.response.data);
             errorNotification(
@@ -56,7 +57,9 @@ const ViewProfilePage = () => {
     }, [])
 
     useEffect(() => {
+        console.log("running", isNewDataAdded, shouldFetchShopDetails);
         if (isUserAuthenticated() && shouldFetchShopDetails.current && !loading) {
+            console.log("inside if", isNewDataAdded, shouldFetchShopDetails);
             shouldFetchShopDetails.current = false;
             fetchShopDetails(user?.userId);
         }
@@ -122,13 +125,9 @@ const ViewProfilePage = () => {
         )
     }
 
-    const profileData = {
-        user,
-        shopDetails
-    }
 
     return <ViewProfileDetails
-        data={profileData}
+        data={shopDetails}
         setIsNewDataAdded={setIsNewDataAdded}
         shouldFetchShopDetails={shouldFetchShopDetails}
     />

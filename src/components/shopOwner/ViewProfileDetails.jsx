@@ -17,6 +17,7 @@ import {
     Flex,
     Heading,
     HStack,
+    IconButton,
     Input,
     InputGroup,
     InputLeftElement,
@@ -31,8 +32,19 @@ import ShowServeItemDetails from "./ShowServeItemDetails.jsx";
 import {BiSearch} from "react-icons/bi";
 import {useRef, useState} from "react";
 import AddItemForm from "./AddItemForm.jsx";
+import {BsPencilSquare} from "react-icons/bs";
+import CustomModal from "../UI/CustomModal.jsx";
+import {useAuth} from "../../context/AuthContext.jsx";
 
 const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) => {
+    const {user} = useAuth();
+
+    const {
+        isOpen: isOpenAccountDetailsModal,
+        onOpen: onOpenAccountDetailsModal,
+        onClose: onCloseAccountDetailsModal
+    } = useDisclosure()
+
     const [enteredSearchItem, setEnteredSearchItem] = useState("");
     const {isOpen, onOpen, onClose} = useDisclosure()
     const btnRef = useRef()
@@ -87,7 +99,7 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                                     Firstname
                                 </Text>
                                 <Input
-                                    defaultValue={data?.user?.firstName}
+                                    defaultValue={user?.firstName}
                                     minW={"300px"}
                                     isDisabled={true}
                                 />
@@ -97,7 +109,7 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                                     Lastname
                                 </Text>
                                 <Input
-                                    defaultValue={data?.user?.lastName}
+                                    defaultValue={user?.lastName}
                                     minW={"300px"}
                                     isDisabled={true}
                                 />
@@ -110,7 +122,7 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                                     Email
                                 </Text>
                                 <Input
-                                    defaultValue={data?.user?.email}
+                                    defaultValue={user?.email}
                                     minW={"300px"}
                                     isDisabled={true}
                                 />
@@ -120,7 +132,7 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                                     Contact Number
                                 </Text>
                                 <Input
-                                    defaultValue={data?.user?.contactNumber}
+                                    defaultValue={user?.contactNumber}
                                     minW={"300px"}
                                     isDisabled={true}
                                 />
@@ -153,7 +165,7 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                                     </Box>
                                 </Flex>
                                 <Input
-                                    defaultValue={data?.shopDetails?.shopName}
+                                    defaultValue={data?.shopName}
                                     minW={"300px"}
                                     placeholder={"Please update shop name here"}
                                 />
@@ -183,7 +195,7 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                                     </Box>
                                 </Flex>
                                 <Input
-                                    defaultValue={data?.shopDetails?.serveItemLimit}
+                                    defaultValue={data?.serveItemLimit}
                                     minW={"300px"}
                                     placeholder={"Please update shop name here"}
                                 />
@@ -259,7 +271,7 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
 
                             <CardBody>
                                 {
-                                    enteredSearchItem && data?.shopDetails?.listOfItems?.filter(item =>
+                                    enteredSearchItem && data?.listOfItems?.filter(item =>
                                         item.name.toLowerCase().startsWith(enteredSearchItem))
                                         .map(item => <ShowServeItemDetails
                                             key={item?.itemId}
@@ -269,7 +281,7 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                                         />)
                                 }
                                 {
-                                    !enteredSearchItem && data?.shopDetails?.listOfItems?.map(item =>
+                                    !enteredSearchItem && data?.listOfItems?.map(item =>
                                         <ShowServeItemDetails
                                             key={item?.itemId}
                                             item={item}
@@ -278,25 +290,45 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                                         />)
                                 }
                                 {
-                                    enteredSearchItem && data?.shopDetails?.listOfItems?.filter(item =>
+                                    enteredSearchItem && data?.listOfItems?.filter(item =>
                                         item.name.toLowerCase()
                                             .startsWith(enteredSearchItem)).length === 0 ?
                                         <Center><Text color={"red.400"}>No Details Found 🥲</Text></Center> : ""
                                 }
                                 {
-                                    !enteredSearchItem && data?.shopDetails?.listOfItems?.length === 0 &&
+                                    !enteredSearchItem && data?.listOfItems?.length === 0 &&
                                     <Center><Text color={"red.400"}>No Items 😒</Text></Center>
                                 }
                             </CardBody>
                         </Card>
 
-                        <Text
-                            fontWeight={"bold"}
-                            fontSize={20}
-                            textDecoration={"underline"}
-                        >
-                            Account Details
-                        </Text>
+                        <HStack gap={4}>
+                            <Text
+                                fontWeight={"bold"}
+                                fontSize={20}
+                                textDecoration={"underline"}
+                            >
+                                Account Details
+                            </Text>
+                            <IconButton
+                                variant='outline'
+                                colorScheme='gray'
+                                aria-label='Call Sage'
+                                fontSize='20px'
+                                icon={<BsPencilSquare/>}
+                                size={"xs"}
+                                onClick={onOpenAccountDetailsModal}
+                            />
+                            <CustomModal
+                                title={"Add/Update Account Details"}
+                                role={user?.roles}
+                                data={data?.accountDetails}
+                                isOpen={isOpenAccountDetailsModal}
+                                onClose={onCloseAccountDetailsModal}
+                                shouldFetchShopDetails={shouldFetchShopDetails}
+                                update={setIsNewDataAdded}
+                            />
+                        </HStack>
 
                         <HStack
                             justifyContent={"space-between"}
@@ -315,7 +347,8 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                                     </Box>
                                 </Flex>
                                 <Input
-                                    defaultValue={data?.shopDetails?.accountDetails?.accountNumber}
+                                    defaultValue={data?.accountDetails?.accountNumber}
+                                    isDisabled={true}
                                     minW={"300px"}
                                     type={"number"}
                                     placeholder={"Please update account number"}
@@ -335,7 +368,8 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                                     </Box>
                                 </Flex>
                                 <Input
-                                    defaultValue={data?.shopDetails?.accountDetails?.branchName}
+                                    defaultValue={data?.accountDetails?.branchName}
+                                    isDisabled={true}
                                     minW={"300px"}
                                     type={"text"}
                                     placeholder={"Please update branch name"}
@@ -359,7 +393,8 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                                     </Box>
                                 </Flex>
                                 <Input
-                                    defaultValue={data?.shopDetails?.accountDetails?.ifsc}
+                                    defaultValue={data?.accountDetails?.ifsc}
+                                    isDisabled={true}
                                     minW={"300px"}
                                     type={"text"}
                                     placeholder={"Please update IFSC code"}
@@ -379,7 +414,8 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                                     </Box>
                                 </Flex>
                                 <Input
-                                    defaultValue={data?.shopDetails?.accountDetails?.bankName}
+                                    defaultValue={data?.accountDetails?.bankName}
+                                    isDisabled={true}
                                     minW={"300px"}
                                     type={"text"}
                                     placeholder={"Please update bank name"}
@@ -400,7 +436,8 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                                 </Box>
                             </Flex>
                             <Input
-                                defaultValue={data?.shopDetails?.accountDetails?.accountType}
+                                defaultValue={data?.accountDetails?.accountType}
+                                isDisabled={true}
                                 minW={"300px"}
                                 type={"text"}
                                 placeholder={"Please update account type"}

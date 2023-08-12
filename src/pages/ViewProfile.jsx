@@ -2,9 +2,10 @@ import ViewProfileDetails from "../components/shopOwner/ViewProfileDetails.jsx";
 import {useAuth} from "../context/AuthContext.jsx";
 import {useNavigate} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
-import {fetchLaundryShopOwnerDetails} from "../services/client.js";
+import {fetchAddress, fetchLaundryShopOwnerDetails} from "../services/client.js";
 import {errorNotification} from "../services/notification.js";
 import {Box, Center, Heading, HStack, Spinner, Stack, Text, useColorModeValue} from "@chakra-ui/react";
+import ShowCustomerAddress from "../components/customer/ShowCustomerAddress.jsx";
 
 const ViewProfilePage = () => {
 
@@ -23,6 +24,7 @@ const ViewProfilePage = () => {
 
     // shop details state
     const [shopDetails, setShopDetails] = useState({});
+    const [address, setAddress] = useState();
 
     const fetchShopDetails = (userId) => {
         fetchLaundryShopOwnerDetails(userId)
@@ -49,6 +51,21 @@ const ViewProfilePage = () => {
         })
     }
 
+    const fetchCustomerDetails = (userId) => {
+        fetchAddress(userId)
+            .then(res => {
+                const address = res.data?.data;
+                setAddress({...address});
+            }).catch(err => {
+            errorNotification(
+                err.code,
+                err.response.data.message
+            )
+        }).finally(() => {
+            setIsFetching(false);
+        })
+    }
+
     useEffect(() => {
         if (!isUserAuthenticated() && shouldNavigate.current) {
             shouldNavigate.current = false;
@@ -57,11 +74,15 @@ const ViewProfilePage = () => {
     }, [])
 
     useEffect(() => {
-        console.log("running", isNewDataAdded, shouldFetchShopDetails);
         if (isUserAuthenticated() && shouldFetchShopDetails.current && !loading) {
             console.log("inside if", isNewDataAdded, shouldFetchShopDetails);
             shouldFetchShopDetails.current = false;
-            fetchShopDetails(user?.userId);
+
+            // user?.roles === "LAUNDRY_SHOP_OWNER" ?
+            //     fetchShopDetails(user?.userId) : fetchCustomerDetails(user?.userId);
+
+            fetchCustomerDetails(user?.userId);
+            user?.roles === "LAUNDRY_SHOP_OWNER" && fetchShopDetails(user?.userId);
         }
     }, [loading, isNewDataAdded])
 
@@ -126,11 +147,19 @@ const ViewProfilePage = () => {
     }
 
 
-    return <ViewProfileDetails
-        data={shopDetails}
-        setIsNewDataAdded={setIsNewDataAdded}
-        shouldFetchShopDetails={shouldFetchShopDetails}
-    />
+    return <>
+        {user?.roles === "LAUNDRY_SHOP_OWNER" && <ViewProfileDetails
+            data={shopDetails}
+            address={address}
+            setIsNewDataAdded={setIsNewDataAdded}
+            shouldFetchShopDetails={shouldFetchShopDetails}
+        />}
+        {user?.roles === "CUSTOMER" && <ShowCustomerAddress
+            address={address}
+            isNewDataAdded={setIsNewDataAdded}
+            shouldFetchShopDetails={shouldFetchShopDetails}
+        />}
+    </>
 }
 
 export default ViewProfilePage;

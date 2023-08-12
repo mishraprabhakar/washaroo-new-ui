@@ -35,8 +35,11 @@ import AddItemForm from "./AddItemForm.jsx";
 import {BsPencilSquare} from "react-icons/bs";
 import CustomModal from "../UI/CustomModal.jsx";
 import {useAuth} from "../../context/AuthContext.jsx";
+import AddAccountDetailsForm from "./AddAccountDetailsForm.jsx";
+import AddShopDetailsForm from "./AddShopDetailsForm.jsx";
+import AddAddressForm from "../shared/AddAddressForm.jsx";
 
-const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) => {
+const ViewProfileDetails = ({data, address, setIsNewDataAdded, shouldFetchShopDetails}) => {
     const {user} = useAuth();
 
     const {
@@ -45,9 +48,21 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
         onClose: onCloseAccountDetailsModal
     } = useDisclosure()
 
+    const {
+        isOpen: isOpenShopDetailsModal,
+        onOpen: onOpenShopDetailsModal,
+        onClose: onCloseShopDetailsModal
+    } = useDisclosure();
+
+    const {
+        isOpen: isOpenAddressUpdateModal,
+        onOpen: onOpenAddressUpdateModal,
+        onClose: onCloseAddressUpdateModal
+    } = useDisclosure();
+
     const [enteredSearchItem, setEnteredSearchItem] = useState("");
     const {isOpen, onOpen, onClose} = useDisclosure()
-    const btnRef = useRef()
+    const btnRef = useRef();
 
     const searchInputOnChangeHandler = (event) => {
         setEnteredSearchItem(event.target.value.toLocaleString().toLowerCase());
@@ -99,7 +114,7 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                                     Firstname
                                 </Text>
                                 <Input
-                                    defaultValue={user?.firstName}
+                                    value={user?.firstName}
                                     minW={"300px"}
                                     isDisabled={true}
                                 />
@@ -109,7 +124,7 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                                     Lastname
                                 </Text>
                                 <Input
-                                    defaultValue={user?.lastName}
+                                    value={user?.lastName}
                                     minW={"300px"}
                                     isDisabled={true}
                                 />
@@ -122,7 +137,7 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                                     Email
                                 </Text>
                                 <Input
-                                    defaultValue={user?.email}
+                                    value={user?.email}
                                     minW={"300px"}
                                     isDisabled={true}
                                 />
@@ -132,20 +147,31 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                                     Contact Number
                                 </Text>
                                 <Input
-                                    defaultValue={user?.contactNumber}
+                                    value={user?.contactNumber}
                                     minW={"300px"}
                                     isDisabled={true}
                                 />
                             </Box>
                         </HStack>
 
-                        <Text
-                            fontWeight={"bold"}
-                            fontSize={20}
-                            textDecoration={"underline"}
-                        >
-                            Shop Details
-                        </Text>
+                        <HStack spacing={4}>
+                            <Text
+                                fontWeight={"bold"}
+                                fontSize={20}
+                                textDecoration={"underline"}
+                            >
+                                Shop Details
+                            </Text>
+                            <IconButton
+                                variant='outline'
+                                colorScheme='gray'
+                                aria-label='Call Sage'
+                                fontSize='20px'
+                                icon={<BsPencilSquare/>}
+                                size={"xs"}
+                                onClick={onOpenShopDetailsModal}
+                            />
+                        </HStack>
 
 
                         <HStack
@@ -165,7 +191,8 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                                     </Box>
                                 </Flex>
                                 <Input
-                                    defaultValue={data?.shopName}
+                                    value={data?.shopName}
+                                    isDisabled={true}
                                     minW={"300px"}
                                     placeholder={"Please update shop name here"}
                                 />
@@ -195,7 +222,230 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                                     </Box>
                                 </Flex>
                                 <Input
-                                    defaultValue={data?.serveItemLimit}
+                                    value={data?.serveItemLimit}
+                                    isDisabled={true}
+                                    minW={"300px"}
+                                    placeholder={"Please update shop name here"}
+                                />
+                            </Box>
+                            <CustomModal
+                                title={"Update Shop Details"}
+                                isOpen={isOpenShopDetailsModal}
+                                onClose={onCloseShopDetailsModal}
+                            >
+                                <AddShopDetailsForm
+                                    data={data}
+                                    setIsNewDataAdded={setIsNewDataAdded}
+                                    shouldFetchShopDetails={shouldFetchShopDetails}
+                                />
+                            </CustomModal>
+                        </HStack>
+
+                        <HStack spacing={4}>
+                            <Text
+                                fontWeight={"bold"}
+                                fontSize={20}
+                                textDecoration={"underline"}
+                            >
+                                Address
+                            </Text>
+                            <IconButton
+                                variant='outline'
+                                colorScheme='gray'
+                                aria-label='Call Sage'
+                                fontSize='20px'
+                                icon={<BsPencilSquare/>}
+                                size={"xs"}
+                                onClick={onOpenAddressUpdateModal}
+                            />
+                            <CustomModal
+                                title={"Add/Update address"}
+                                onClose={onCloseAddressUpdateModal}
+                                isOpen={isOpenAddressUpdateModal}
+                            >
+                                <AddAddressForm
+                                    address={address}
+                                    shouldFetchShopDetails={shouldFetchShopDetails}
+                                    isNewDataAdded={setIsNewDataAdded}
+                                    onClose={onCloseAddressUpdateModal}
+                                />
+                            </CustomModal>
+                        </HStack>
+
+                        <HStack
+                            justifyContent={"space-between"}
+                        >
+
+                            <Box>
+                                <Flex>
+                                    <Box>
+                                        <Text
+                                        >
+                                            Area Name
+                                        </Text>
+                                    </Box>
+                                    <Box color={"red.300"}>
+                                        <LuAsterisk/>
+                                    </Box>
+                                </Flex>
+                                <Input
+                                    value={address?.areaName}
+                                    isDisabled={true}
+                                    minW={"300px"}
+                                    placeholder={"Please update shop name here"}
+                                />
+                            </Box>
+
+                            <Box>
+                                <Flex>
+                                    <Box>
+                                        <Text
+                                        >
+                                            City
+                                        </Text>
+                                    </Box>
+                                    <Box color={"red.300"}>
+                                        <LuAsterisk/>
+                                    </Box>
+                                </Flex>
+                                <Input
+                                    value={address?.city}
+                                    isDisabled={true}
+                                    minW={"300px"}
+                                    placeholder={"Please update shop name here"}
+                                />
+                            </Box>
+                        </HStack>
+
+                        <HStack
+                            justifyContent={"space-between"}
+                        >
+
+                            <Box>
+                                <Flex>
+                                    <Box>
+                                        <Text
+                                        >
+                                            District
+                                        </Text>
+                                    </Box>
+                                    <Box color={"red.300"}>
+                                        <LuAsterisk/>
+                                    </Box>
+                                </Flex>
+                                <Input
+                                    value={address?.district}
+                                    isDisabled={true}
+                                    minW={"300px"}
+                                    placeholder={"Please update shop name here"}
+                                />
+                            </Box>
+
+                            <Box>
+                                <Flex>
+                                    <Box>
+                                        <Text
+                                        >
+                                            Landmark
+                                        </Text>
+                                    </Box>
+                                    <Box color={"red.300"}>
+                                        <LuAsterisk/>
+                                    </Box>
+                                </Flex>
+                                <Input
+                                    value={address?.landmark}
+                                    isDisabled={true}
+                                    minW={"300px"}
+                                    placeholder={"Please update shop name here"}
+                                />
+                            </Box>
+                        </HStack>
+
+                        <HStack
+                            justifyContent={"space-between"}
+                        >
+
+                            <Box>
+                                <Flex>
+                                    <Box>
+                                        <Text
+                                        >
+                                            Pin Code
+                                        </Text>
+                                    </Box>
+                                    <Box color={"red.300"}>
+                                        <LuAsterisk/>
+                                    </Box>
+                                </Flex>
+                                <Input
+                                    value={address?.pincode}
+                                    isDisabled={true}
+                                    minW={"300px"}
+                                    placeholder={"Please update shop name here"}
+                                />
+                            </Box>
+
+                            <Box>
+                                <Flex>
+                                    <Box>
+                                        <Text
+                                        >
+                                            Room Number
+                                        </Text>
+                                    </Box>
+                                    <Box color={"red.300"}>
+                                        <LuAsterisk/>
+                                    </Box>
+                                </Flex>
+                                <Input
+                                    value={address?.roomNumber}
+                                    isDisabled={true}
+                                    minW={"300px"}
+                                    placeholder={"Please update shop name here"}
+                                />
+                            </Box>
+                        </HStack>
+
+                        <HStack
+                            justifyContent={"space-between"}
+                        >
+
+                            <Box>
+                                <Flex>
+                                    <Box>
+                                        <Text
+                                        >
+                                            State
+                                        </Text>
+                                    </Box>
+                                    <Box color={"red.300"}>
+                                        <LuAsterisk/>
+                                    </Box>
+                                </Flex>
+                                <Input
+                                    value={address?.state}
+                                    isDisabled={true}
+                                    minW={"300px"}
+                                    placeholder={"Please update shop name here"}
+                                />
+                            </Box>
+
+                            <Box>
+                                <Flex>
+                                    <Box>
+                                        <Text
+                                        >
+                                            Sub District
+                                        </Text>
+                                    </Box>
+                                    <Box color={"red.300"}>
+                                        <LuAsterisk/>
+                                    </Box>
+                                </Flex>
+                                <Input
+                                    value={address?.subDistrict}
+                                    isDisabled={true}
                                     minW={"300px"}
                                     placeholder={"Please update shop name here"}
                                 />
@@ -321,13 +571,16 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                             />
                             <CustomModal
                                 title={"Add/Update Account Details"}
-                                role={user?.roles}
-                                data={data?.accountDetails}
                                 isOpen={isOpenAccountDetailsModal}
                                 onClose={onCloseAccountDetailsModal}
-                                shouldFetchShopDetails={shouldFetchShopDetails}
-                                update={setIsNewDataAdded}
-                            />
+                            >
+                                <AddAccountDetailsForm
+                                    data={data?.accountDetails}
+                                    update={setIsNewDataAdded}
+                                    onClose={onCloseAccountDetailsModal}
+                                    shouldFetchShopDetails={shouldFetchShopDetails}
+                                />
+                            </CustomModal>
                         </HStack>
 
                         <HStack
@@ -347,7 +600,7 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                                     </Box>
                                 </Flex>
                                 <Input
-                                    defaultValue={data?.accountDetails?.accountNumber}
+                                    value={data?.accountDetails?.accountNumber}
                                     isDisabled={true}
                                     minW={"300px"}
                                     type={"number"}
@@ -368,7 +621,7 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                                     </Box>
                                 </Flex>
                                 <Input
-                                    defaultValue={data?.accountDetails?.branchName}
+                                    value={data?.accountDetails?.branchName}
                                     isDisabled={true}
                                     minW={"300px"}
                                     type={"text"}
@@ -393,7 +646,7 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                                     </Box>
                                 </Flex>
                                 <Input
-                                    defaultValue={data?.accountDetails?.ifsc}
+                                    value={data?.accountDetails?.ifsc}
                                     isDisabled={true}
                                     minW={"300px"}
                                     type={"text"}
@@ -414,7 +667,7 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                                     </Box>
                                 </Flex>
                                 <Input
-                                    defaultValue={data?.accountDetails?.bankName}
+                                    value={data?.accountDetails?.bankName}
                                     isDisabled={true}
                                     minW={"300px"}
                                     type={"text"}
@@ -436,7 +689,7 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
                                 </Box>
                             </Flex>
                             <Input
-                                defaultValue={data?.accountDetails?.accountType}
+                                value={data?.accountDetails?.accountType}
                                 isDisabled={true}
                                 minW={"300px"}
                                 type={"text"}
@@ -449,8 +702,7 @@ const ViewProfileDetails = ({data, setIsNewDataAdded, shouldFetchShopDetails}) =
             </Card>
 
         </Container>
-    )
-        ;
+    );
 }
 
 export default ViewProfileDetails;

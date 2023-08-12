@@ -47,7 +47,7 @@ export const addItem = async (userId, item) => {
             getAuthConfig()
         )
     } catch (e) {
-        throw  e;
+        throw e;
     }
 }
 
@@ -70,6 +70,41 @@ export const addOrUpdateAccountDetails = async (userId, accountDetails) => {
             getAuthConfig()
         )
     } catch (e) {
-        throw  e;
+        throw e;
+    }
+}
+
+export const addOrUpdateShopDetails = async (userId, shopDetails) => {
+    try {
+        return await axios.post(
+            `http://localhost:8080/api/v1/laundry-shop/shopDetails/${userId}`,
+            shopDetails,
+            getAuthConfig()
+        )
+    } catch (e) {
+        throw e;
+    }
+}
+
+export const fetchAddress = async (userId) => {
+    try {
+        return await axios.get(
+            `http://localhost:8080/api/v1/users/address/${userId}`,
+            getAuthConfig()
+        )
+    } catch (e) {
+        throw e;
+    }
+}
+
+export const saveAddress = async (userId, address) => {
+    try {
+        return await axios.post(
+            `http://localhost:8080/api/v1/users/address/${userId}`,
+            address,
+            getAuthConfig()
+        )
+    } catch (e) {
+        throw e;
     }
 }

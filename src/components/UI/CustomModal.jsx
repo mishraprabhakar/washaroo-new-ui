@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import AddAccountDetailsForm from "../shopOwner/AddAccountDetailsForm.jsx";
 
-const CustomModal = ({title, role, isOpen, onClose, data, update, shouldFetchShopDetails}) => {
+const CustomModal = ({title, isOpen, onClose, children}) => {
     return (
         <Modal
             onClose={onClose}
@@ -23,12 +23,7 @@ const CustomModal = ({title, role, isOpen, onClose, data, update, shouldFetchSho
                 <ModalHeader>{title}</ModalHeader>
                 <ModalCloseButton/>
                 <ModalBody>
-                    <AddAccountDetailsForm
-                        data={data}
-                        update={update}
-                        onClose={onClose}
-                        shouldFetchShopDetails={shouldFetchShopDetails}
-                    />
+                    {children}
                 </ModalBody>
                 <ModalFooter>
                     <Button onClick={onClose}>Close</Button>

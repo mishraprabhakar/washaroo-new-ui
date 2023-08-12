@@ -1,42 +1,43 @@
-import {Form, Formik} from "formik";
 import * as Yup from "yup";
+import {Form, Formik} from "formik";
 import {Box, Button, Stack} from "@chakra-ui/react";
 import CustomInput from "../UI/CustomInput.jsx";
-import {addItem} from "../../services/client.js";
+import {addOrUpdateShopDetails} from "../../services/client.js";
 import {useAuth} from "../../context/AuthContext.jsx";
 import {errorNotification, successNotification} from "../../services/notification.js";
 
-const FORM_INITIAL_VALUES = {
-    name: '',
-    price: '',
-};
-
-const FORM_VALIDATION_SCHEMA = Yup.object().shape({
-    name: Yup.string()
-        .min(3, 'Item name must be more than 3 character long')
-        .required('Item name is required'),
-    price: Yup.number()
-        .min(1, 'Must be at least 1 digit')
-        .required('Price is required'),
-});
-
-const AddItemForm = ({setIsNewDataAdded, shouldFetchShopDetails}) => {
+const AddShopDetailsForm = ({data, setIsNewDataAdded, shouldFetchShopDetails}) => {
     const {user} = useAuth();
 
+    const FORM_INITIAL_VALUES = {
+        shopName: `${data?.shopName ? data?.shopName : ''}`,
+        serveItemLimit: `${data?.serveItemLimit ? data?.serveItemLimit : ''}`,
+    };
+
+    const FORM_VALIDATION_SCHEMA = Yup.object().shape({
+        shopName: Yup.string()
+            .min(3, 'Shop name must be at least 3 character long')
+            .required('Shop name is required'),
+        serveItemLimit: Yup.number()
+            .min(1, 'Must be at least 1 digit')
+            .required('Serve limit is required'),
+    });
+
+
     const formSubmissionHandler = (values, {setSubmitting, resetForm}) => {
-        addItem(user?.userId, values)
+        setSubmitting(true)
+        addOrUpdateShopDetails(user?.userId, values)
             .then(res => {
                 successNotification(
                     "Success",
-                    "Item added successfully"
+                    "Shop details added successfully"
                 )
-                resetForm();
                 shouldFetchShopDetails.current = true;
                 setIsNewDataAdded(prevState => (!prevState));
             }).catch(err => {
             errorNotification(
                 err.code,
-                err.response
+                err.response.data?.message
             )
         }).finally(() => {
             setSubmitting(false);
@@ -46,8 +47,8 @@ const AddItemForm = ({setIsNewDataAdded, shouldFetchShopDetails}) => {
     return (
         <Formik
             validateOnMount={true}
-            initialValues={FORM_INITIAL_VALUES}
             validationSchema={FORM_VALIDATION_SCHEMA}
+            initialValues={FORM_INITIAL_VALUES}
             onSubmit={formSubmissionHandler}
         >
             {({isValid, isSubmitting}) => (
@@ -55,22 +56,25 @@ const AddItemForm = ({setIsNewDataAdded, shouldFetchShopDetails}) => {
                     <Stack spacing={4}>
                         <Box>
                             <CustomInput
-                                id="name"
-                                label="Item Name"
-                                name="name"
+                                id="shopName"
+                                label="Shop Name"
+                                name="shopName"
                                 type="text"
-                                placeholder="Enter your item name"
+                                placeholder="Enter your shop name"
                             />
                         </Box>
+
                         <Box>
                             <CustomInput
-                                id="price"
-                                label="Price"
-                                name="price"
+                                id="serveItemLimit"
+                                label="Serve Item Limit"
+                                name="serveItemLimit"
                                 type="number"
+                                placeholder="Enter your serve item limit"
                             />
                         </Box>
-                        <Box display={"flex"} justifyContent={"end"}>
+
+                        <Box>
                             <Button
                                 isDisabled={!isValid}
                                 isLoading={isSubmitting}
@@ -93,4 +97,4 @@ const AddItemForm = ({setIsNewDataAdded, shouldFetchShopDetails}) => {
     )
 }
 
-export default AddItemForm;
+export default AddShopDetailsForm;

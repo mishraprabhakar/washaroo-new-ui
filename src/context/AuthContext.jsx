@@ -1,7 +1,7 @@
 import {
     createContext,
     useContext,
-    useEffect,
+    useEffect, useRef,
     useState
 } from "react";
 import {login as performLogin} from "../services/client.js"
@@ -10,7 +10,8 @@ import jwtDecode from "jwt-decode";
 const AuthContext = createContext({});
 
 const AuthProvider = ({children}) => {
-
+    const [loading, setLoading] = useState(true);
+    const shouldSetUser = useRef(true);
     const [user, setUser] = useState(null);
 
     const setUserFromToken = () => {
@@ -33,7 +34,11 @@ const AuthProvider = ({children}) => {
     }
 
     useEffect(() => {
-        setUserFromToken()
+        if (shouldSetUser.current) {
+            shouldSetUser.current = false;
+            setUserFromToken()
+            setLoading(false);
+        }
     }, [])
 
 
@@ -57,7 +62,6 @@ const AuthProvider = ({children}) => {
                     roles: decodedToken.roles
                 })
 
-                console.log(user);
                 resolve(res);
             }).catch(err => {
                 reject(err);
@@ -90,7 +94,8 @@ const AuthProvider = ({children}) => {
             login,
             logOut,
             isUserAuthenticated,
-            setUserFromToken
+            setUserFromToken,
+            loading
         }}>
             {children}
         </AuthContext.Provider>

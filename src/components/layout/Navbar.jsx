@@ -1,36 +1,47 @@
 'use client'
 
 import {
+    Avatar,
     Box,
-    Flex,
-    Text,
-    IconButton,
     Button,
-    Stack,
+    Center,
     Collapse,
+    Flex,
     Icon,
+    IconButton,
+    Image,
+    Input,
+    InputGroup,
+    InputRightAddon,
+    Menu,
+    MenuButton,
+    MenuDivider,
+    MenuItem,
+    MenuList,
     Popover,
-    PopoverTrigger,
     PopoverContent,
-    useColorModeValue,
+    PopoverTrigger,
+    Stack,
+    Text,
     useBreakpointValue,
-    useDisclosure, Image, useColorMode, MenuList, Center, Avatar, MenuDivider, MenuItem, MenuButton, Menu,
+    useColorMode,
+    useColorModeValue,
+    useDisclosure,
 } from '@chakra-ui/react'
-import {
-    HamburgerIcon,
-    CloseIcon,
-    ChevronDownIcon,
-    ChevronRightIcon,
-} from '@chakra-ui/icons'
+import {ChevronDownIcon, ChevronRightIcon, CloseIcon, HamburgerIcon,} from '@chakra-ui/icons'
 import appLogo from "../../assets/washaroo-logo.jpeg"
-import {NavLink} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 import {BsMoonStarsFill, BsSun} from "react-icons/bs";
 import {useAuth} from "../../context/AuthContext.jsx";
+import {AiOutlineSearch} from "react-icons/ai";
+import {useState} from "react";
 
 export default function Navbar() {
     const {colorMode, toggleColorMode} = useColorMode();
     const {isOpen, onToggle} = useDisclosure()
     const {user, isUserAuthenticated, logOut} = useAuth();
+    const [enteredSearchQuery, setEnteredSearchQuery] = useState("");
+    const navigate = useNavigate();
 
     const NAV_ITEMS = [
         {
@@ -46,6 +57,17 @@ export default function Navbar() {
             href: '#',
         }
     ]
+
+    const onClickSearchButtonHandler = () => {
+        if (enteredSearchQuery) {
+            navigate(`/search/${enteredSearchQuery}`)
+        }
+    }
+
+    const onChangeSearchInput = (event) => {
+        const value = event.target.value.toLocaleString().trim();
+        setEnteredSearchQuery(value);
+    }
 
     return (
         <Box>
@@ -86,6 +108,26 @@ export default function Navbar() {
                         <DesktopNav NAV_ITEMS={NAV_ITEMS}/>
                     </Flex>
                 </Flex>
+
+                {
+                    isUserAuthenticated() && user?.roles === "CUSTOMER" &&
+                    <Box mr={4}>
+                        <InputGroup>
+                            <Input
+                                placeholder='Search here with comma seperated'
+                                variant='outline'
+                                onChange={onChangeSearchInput}
+                                value={enteredSearchQuery}
+                                w={"300px"}
+                            />
+                            <InputRightAddon
+                                children={<AiOutlineSearch/>}
+                                as={Button}
+                                onClick={onClickSearchButtonHandler}
+                            />
+                        </InputGroup>
+                    </Box>
+                }
 
                 <Stack
                     flex={{base: 1, md: 0}}

@@ -75,12 +75,7 @@ const ViewProfilePage = () => {
 
     useEffect(() => {
         if (isUserAuthenticated() && shouldFetchShopDetails.current && !loading) {
-            console.log("inside if", isNewDataAdded, shouldFetchShopDetails);
             shouldFetchShopDetails.current = false;
-
-            // user?.roles === "LAUNDRY_SHOP_OWNER" ?
-            //     fetchShopDetails(user?.userId) : fetchCustomerDetails(user?.userId);
-
             fetchCustomerDetails(user?.userId);
             user?.roles === "LAUNDRY_SHOP_OWNER" && fetchShopDetails(user?.userId);
         }

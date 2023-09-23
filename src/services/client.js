@@ -108,3 +108,14 @@ export const saveAddress = async (userId, address) => {
         throw e;
     }
 }
+
+export const fetchLaundryShops = async (pinCode, queries) => {
+    try {
+        return await axios.get(
+            `http://localhost:8080/api/v1/laundry-shop/${pinCode}`,
+            getAuthConfig()
+        )
+    } catch (e) {
+        throw e;
+    }
+}

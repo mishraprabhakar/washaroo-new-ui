@@ -9,6 +9,7 @@ import LoginPage from "./pages/Login.jsx";
 import SignUpPage from "./pages/SignUp.jsx";
 import AuthProvider from "./context/AuthContext.jsx";
 import ViewProfilePage from "./pages/ViewProfile.jsx";
+import SearchPage from "./pages/Search.jsx";
 
 const {ToastContainer} = createStandaloneToast();
 
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
             {
                 path: "view/:userId",
                 element: <ViewProfilePage/>
+            },
+            {
+                path: "search/:query",
+                element: <SearchPage/>
             }
         ]
     }
